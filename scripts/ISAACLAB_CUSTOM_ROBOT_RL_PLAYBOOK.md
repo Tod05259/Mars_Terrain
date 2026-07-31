@@ -259,6 +259,7 @@ env를 만들어 액션 0으로 스텝하며 발 접촉력·root z를 출력. �
 | 로봇이 지형을 뚫고 침몰 / 발 접촉력 0 | **지형 법선이 아래로 뒤집힘** (Newton 단면 충돌) | 전처리에서 winding 교정. 스탠딩 테스트로 진단 |
 | `nefc overflow ... increase njmax` | MJWarp 제약 버퍼 초과 (접촉 누락) | `solver_cfg.njmax`/`nconmax` 확대 |
 | 학습 중반 `observation contains NaN` 크래시 | 대개 물리 발산(위 지형 문제 등)의 2차 증상 | 근본 원인 수정 + 안전망: `clip_actions`, `root_height_below_minimum` 종료 |
+| `RuntimeError: normal expects all elements of std >= 0.0` (정책 std NaN) | **레이캐스터 hit을 평균하는 보상이 inf**. 레이가 지형을 빗나가면 `ray_hits_w`=inf → 평균 inf → 보상 inf → 그래디언트 NaN (특히 num_envs 큼/고속이라 로봇이 지형 경계로 나갈 때). 관측은 `clip`으로 안전하지만 보상은 무방비 | 보상에서 `torch.isfinite` 마스크로 유한 레이만 평균(또는 보상 클램프). 지형 경계 여유를 두거나 경계 이탈 종료 추가 |
 | 로봇이 공중 스폰/언덕에 파묻힘 | usd 지형 env origin z=0 고정 | 커스텀 임포터로 origin z를 지면에 스냅 |
 | 로봇이 앉아서 끌고 다님 (퇴화 걸음새) | "서 있어라" 보상 부재 + 걸음 보상 미점화 | 5장 참조 (base_height 보상 등) |
 | `--viz kit` 실행 시 `Caught an unknown exception!` | 이 설치본 Kit GUI 확장 DLL 로드 실패 | `--viz newton` (Newton 자체 뷰어) 또는 `--viz none` |

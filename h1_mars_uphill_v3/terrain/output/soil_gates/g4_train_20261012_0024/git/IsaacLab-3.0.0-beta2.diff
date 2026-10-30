@@ -1,0 +1,741 @@
+--- git commit ---
+28a37cecdd433c22d9eabd6a5954add9f13a8951
+
+
+--- git status ---
+On branch 2hj05/h1-mars-mpm-uphill
+Changes to be committed:
+  (use "git restore --staged <file>..." to unstage)
+	new file:   imgui.ini
+	new file:   mars_terrain/scripts/visualize_gale_terrain_material.py
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+	modified:   mars_terrain/scripts/visualize_gale_terrain_material.py
+	modified:   scripts/reinforcement_learning/rsl_rl/train.py
+	modified:   source/isaaclab_tasks/isaaclab_tasks/direct/cart_double_pendulum/cart_double_pendulum_env_cfg.py
+	modified:   source/isaaclab_tasks/isaaclab_tasks/direct/cartpole/cartpole_env_cfg.py
+
+Untracked files:
+  (use "git add <file>..." to include in what will be committed)
+	0.5.0
+	h1_mars_mpm_uphill/
+	h1_mars_team_guide_uphill/
+	mars_terrain/scripts/mars_rocks.py
+	mars_terrain/scripts/run_mars_rocks_demo.py
+	mars_terrain/scripts/run_mars_rocks_demo_fixed.py
+	mpm_locomotion/
+	scripts/g1_mars_probe.py
+	source/isaaclab_tasks/isaaclab_tasks/manager_based/locomotion/velocity/config/g1_mars/
+ 
+
+
+--- git diff ---
+diff --git a/imgui.ini b/imgui.ini
+new file mode 100644
+index 00000000..f7e0d05f
+--- /dev/null
++++ b/imgui.ini
+@@ -0,0 +1,10 @@
++[Window][Debug##Default]
++Pos=60,60
++Size=400,400
++Collapsed=0
++
++[Window][Newton Viewer v1.2.1]
++Pos=10,10
++Size=300,1060
++Collapsed=0
++
+diff --git a/mars_terrain/scripts/visualize_gale_terrain_material.py b/mars_terrain/scripts/visualize_gale_terrain_material.py
+new file mode 100644
+index 00000000..d9047191
+--- /dev/null
++++ b/mars_terrain/scripts/visualize_gale_terrain_material.py
+@@ -0,0 +1,259 @@
++# Copyright (c) 2022-2026, The Isaac Lab Project Developers (https://github.com/isaac-sim/IsaacLab/blob/main/CONTRIBUTORS.md).
++# All rights reserved.
++#
++# SPDX-License-Identifier: BSD-3-Clause
++
++"""Import a completed Mars terrain USD in Isaac Lab and bind a contact (physics) material.
++
++This visualizes the Gale Crater / Aeolis Palus-Mount Sharp terrain USD and binds a PhysX
++rigid-body contact material to the terrain collider at runtime. ``TerrainImporterCfg`` does
++not apply material properties for ``terrain_type="usd"``, so the material is created and bound
++manually with :func:`~isaaclab.sim.utils.bind_physics_material`.
++
++Run from the IsaacLab repository root::
++
++    .\\isaaclab.bat -p .\\mars_terrain\\scripts\\visualize_gale_terrain_material.py
++
++Visualize the terrain in the Isaac Sim GUI
++
++    .\isaaclab.bat -p .\mars_terrain\scripts\visualize_gale_terrain_material.py --viz kit
++
++
++Headless verification (finite steps, no window)::
++
++    .\\isaaclab.bat -p .\\mars_terrain\\scripts\\visualize_gale_terrain_material.py --headless --num_steps 60
++"""
++
++import argparse
++from pathlib import Path
++
++from isaaclab.app import AppLauncher
++
++# Default to the Gale Crater terrain USD. The terrain directory holds several Mars USDs, so a
++# concrete file is used rather than the directory to keep the target unambiguous.
++DEFAULT_USD = r"C:\IsaacLab-3.0.0-beta2\mars_terrain\usd\gale_aeolis_mount_sharp_aeolis_palus_center_1024px_stride2.usd"
++
++# Mars terrain contact-material values (see GALE_TERRAIN_IMPORTER_MATERIAL_WORKFLOW.md).
++STATIC_FRICTION = 0.54
++DYNAMIC_FRICTION = 0.42
++COMPLIANT_CONTACT_STIFFNESS = 2.2e4  # [N/m]
++COMPLIANT_CONTACT_DAMPING = 160.0  # [N*s/m]
++
++
++def resolve_usd_path(path_or_dir: str) -> str:
++    """Resolve a direct USD file path, or a directory containing exactly one USD file."""
++    path = Path(path_or_dir)
++    if path.is_file():
++        if path.suffix.lower() not in (".usd", ".usda", ".usdc"):
++            raise ValueError(f"Target file is not a USD file: {path}")
++        return str(path)
++    if path.is_dir():
++        usd_files = sorted(path.glob("*.usd")) + sorted(path.glob("*.usda")) + sorted(path.glob("*.usdc"))
++        if not usd_files:
++            raise FileNotFoundError(f"No USD files found in directory: {path}")
++        if len(usd_files) > 1:
++            listing = "\n".join(f"  - {c}" for c in usd_files)
++            raise RuntimeError(
++                f"Multiple USD files found in {path}. Pass the target file explicitly with"
++                f" --usd_path.\n{listing}"
++            )
++        return str(usd_files[0])
++    raise FileNotFoundError(f"USD path does not exist: {path}")
++
++
++# Parse arguments before launching Isaac Sim.
++parser = argparse.ArgumentParser(
++    description="Import Gale Crater / Aeolis Palus-Mount Sharp USD terrain and bind a Mars contact material."
++)
++parser.add_argument(
++    "--usd_path",
++    type=str,
++    default=DEFAULT_USD,
++    help="Path to the Gale terrain USD file, or a directory containing exactly one USD file.",
++)
++parser.add_argument(
++    "--terrain_prim_path",
++    type=str,
++    default="/World/terrain",
++    help="Root prim path where TerrainImporter places the terrain.",
++)
++parser.add_argument(
++    "--env_spacing",
++    type=float,
++    default=10.0,
++    help="Environment spacing used by TerrainImporterCfg for usd terrain.",
++)
++parser.add_argument(
++    "--num_steps",
++    type=int,
++    default=60,
++    help="Number of simulation steps to run when --headless is set. Ignored in GUI mode.",
++)
++parser.add_argument(
++    "--export_scene",
++    type=str,
++    default="",
++    help="Optional path to export the stage (terrain + material binding) after setup.",
++)
++
++AppLauncher.add_app_launcher_args(parser)
++args_cli = parser.parse_args()
++
++# Launch Isaac Sim / Omniverse.
++app_launcher = AppLauncher(args_cli)
++simulation_app = app_launcher.app
++
++# Isaac Lab / Omniverse imports must come after AppLauncher.
++import isaaclab.sim as sim_utils  # noqa: E402
++from isaaclab.sim.spawners.materials import PhysxRigidBodyMaterialCfg  # noqa: E402
++from isaaclab.sim.utils import bind_physics_material  # noqa: E402
++from isaaclab.sim.utils.stage import get_current_stage  # noqa: E402
++from isaaclab.terrains import TerrainImporter, TerrainImporterCfg  # noqa: E402
++from pxr import Gf, Usd, UsdGeom, UsdPhysics, UsdShade  # noqa: E402
++
++
++def frame_camera(sim: sim_utils.SimulationContext, prim_path: str) -> None:
++    """Point the camera at the terrain by computing its world-space bounding box."""
++    stage = get_current_stage()
++    cache = UsdGeom.BBoxCache(Usd.TimeCode.Default(), [UsdGeom.Tokens.default_, UsdGeom.Tokens.render])
++    bound = cache.ComputeWorldBound(stage.GetPrimAtPath(prim_path))
++    rng = bound.ComputeAlignedRange()
++    bb_min, bb_max = rng.GetMin(), rng.GetMax()
++    if rng.IsEmpty():
++        sim.set_camera_view(eye=[30.0, -30.0, 20.0], target=[0.0, 0.0, 0.0])
++        return
++    center = Gf.Vec3d(0.5 * (bb_min + bb_max))
++    ext = max(bb_max[0] - bb_min[0], bb_max[1] - bb_min[1])
++    eye = [center[0] - 0.9 * ext, center[1] - 0.9 * ext, center[2] + 0.7 * ext]
++    target = [center[0], center[1], center[2]]
++    print(f"[INFO] Terrain bbox min={tuple(round(v, 2) for v in bb_min)} max={tuple(round(v, 2) for v in bb_max)}")
++    print(f"[INFO] Camera eye={[round(v, 1) for v in eye]} target={[round(v, 1) for v in target]}")
++    sim.set_camera_view(eye=eye, target=target)
++
++
++def report_terrain(stage: Usd.Stage, root_path: str, material_path: str) -> None:
++    """Print mesh prims, collision prims, and the bound physics material under the terrain root."""
++    mesh_paths, collision_paths = [], []
++    for prim in stage.Traverse():
++        p = str(prim.GetPath())
++        if not (p == root_path or p.startswith(root_path + "/")):
++            continue
++        if prim.IsA(UsdGeom.Mesh):
++            mesh_paths.append(p)
++        if prim.HasAPI(UsdPhysics.CollisionAPI):
++            collision_paths.append(p)
++
++    print(f"[INFO] Mesh prims under {root_path}: {len(mesh_paths)}")
++    for p in mesh_paths[:10]:
++        print(f"  mesh: {p}")
++    print(f"[INFO] Collision prims under {root_path}: {len(collision_paths)}")
++    for p in collision_paths[:10]:
++        bound_mat, _ = UsdShade.MaterialBindingAPI(stage.GetPrimAtPath(p)).ComputeBoundMaterial("physics")
++        bound_path = bound_mat.GetPath() if bound_mat else "<none>"
++        ok = "OK" if str(bound_path) == material_path else "MISMATCH"
++        print(f"  collision: {p} -> physics material: {bound_path} [{ok}]")
++
++    if not collision_paths:
++        print("[WARNING] No collision-enabled prims under the terrain root.")
++        print("[WARNING] Terrain will visualize, but contact material cannot affect physics until a collider exists.")
++
++
++def restore_masked_mesh_type(stage: Usd.Stage, prim_paths: list[str]) -> list[str]:
++    """Restore the ``Mesh`` type on terrain prims whose geometry was flattened onto an Xform.
++
++    These Mars terrain USDs author the geometry directly on the default prim (``/terrain`` is the
++    Mesh). ``TerrainImporter`` references that file onto a prim created with ``prim_type="Xform"``,
++    and the local Xform type masks the referenced Mesh type. The mesh attributes (points, indices)
++    still compose onto the prim, but Hydra dispatches render prims by type, so an Xform carrying
++    mesh data is not drawn. Setting the type back to ``Mesh`` makes it render. The original USD file
++    is untouched; collider/material bindings are applied schemas and are unaffected.
++    """
++    fixed = []
++    for path in prim_paths:
++        prim = stage.GetPrimAtPath(path)
++        if prim.IsValid() and not prim.IsA(UsdGeom.Mesh) and prim.HasAttribute("points"):
++            prim.SetTypeName("Mesh")
++            fixed.append(path)
++    return fixed
++
++
++def main():
++    usd_path = resolve_usd_path(args_cli.usd_path)
++    print(f"[INFO] Target USD: {usd_path}")
++
++    # Simulation context.
++    sim_cfg = sim_utils.SimulationCfg(dt=1.0 / 60.0, device=args_cli.device)
++    sim = sim_utils.SimulationContext(sim_cfg)
++
++    # Lighting for viewport visibility.
++    dome_light_cfg = sim_utils.DomeLightCfg(intensity=2500.0, color=(1.0, 1.0, 1.0))
++    dome_light_cfg.func("/World/DomeLight", dome_light_cfg)
++
++    # Import terrain USD. Material is NOT auto-applied for terrain_type="usd"; it is bound below.
++    terrain_cfg = TerrainImporterCfg(
++        prim_path=args_cli.terrain_prim_path,
++        terrain_type="usd",
++        usd_path=usd_path,
++        env_spacing=args_cli.env_spacing,
++        debug_vis=True,
++    )
++    terrain = TerrainImporter(terrain_cfg)
++    print(f"[INFO] Terrain imported. Terrain prim paths: {terrain.terrain_prim_paths}")
++
++    # Restore Mesh type so the terrain renders (see restore_masked_mesh_type for the rationale).
++    stage = get_current_stage()
++    restored = restore_masked_mesh_type(stage, terrain.terrain_prim_paths)
++    if restored:
++        print(f"[INFO] Restored 'Mesh' type for renderability on: {restored}")
++
++    # Create the PhysX rigid-body contact material for the Mars surface.
++    material_path = "/World/gale_mars_surface_physics_material"
++    material_cfg = PhysxRigidBodyMaterialCfg(
++        static_friction=STATIC_FRICTION,
++        dynamic_friction=DYNAMIC_FRICTION,
++        restitution=0.0,
++        friction_combine_mode="average",
++        restitution_combine_mode="average",
++        compliant_contact_stiffness=COMPLIANT_CONTACT_STIFFNESS,
++        compliant_contact_damping=COMPLIANT_CONTACT_DAMPING,
++    )
++    material_cfg.func(material_path, material_cfg)
++    print(f"[INFO] Physics material created: {material_path}")
++    print(
++        f"[INFO]   static_friction={STATIC_FRICTION} dynamic_friction={DYNAMIC_FRICTION}"
++        f" k_e={COMPLIANT_CONTACT_STIFFNESS} k_d={COMPLIANT_CONTACT_DAMPING}"
++    )
++
++    # Bind the material to the terrain root; apply_nested propagates it to the collider descendant.
++    bind_result = bind_physics_material(args_cli.terrain_prim_path, material_path, stronger_than_descendants=True)
++    print(f"[INFO] bind_physics_material returned: {bind_result}")
++
++    # Diagnostics: meshes, colliders, and the resolved physics-material binding.
++    if not stage.GetPrimAtPath(args_cli.terrain_prim_path).IsValid():
++        raise RuntimeError(f"Terrain root prim is invalid: {args_cli.terrain_prim_path}")
++    report_terrain(stage, args_cli.terrain_prim_path, material_path)
++
++    # Frame the camera on the terrain (it is not centered at the origin).
++    frame_camera(sim, args_cli.terrain_prim_path)
++
++    # Reset after scene construction.
++    sim.reset()
++
++    if args_cli.export_scene:
++        stage.GetRootLayer().Export(args_cli.export_scene)
++        print(f"[INFO] Exported material-bound scene: {args_cli.export_scene}")
++
++    # Step the simulation: finite steps when headless, otherwise until the window is closed.
++    if args_cli.headless:
++        print(f"[INFO] Headless: running {args_cli.num_steps} steps then exiting.")
++        for _ in range(args_cli.num_steps):
++            sim.step()
++    else:
++        print("[INFO] Simulation running. Close the Isaac Sim window to exit.")
++        while simulation_app.is_running():
++            sim.step()
++
++
++if __name__ == "__main__":
++    main()
++    simulation_app.close()
+\ No newline at end of file
+diff --git a/scripts/reinforcement_learning/rsl_rl/train.py b/scripts/reinforcement_learning/rsl_rl/train.py
+index 3ea4449f..19958c30 100644
+--- a/scripts/reinforcement_learning/rsl_rl/train.py
++++ b/scripts/reinforcement_learning/rsl_rl/train.py
+@@ -3,10 +3,25 @@
+ #
+ # SPDX-License-Identifier: BSD-3-Clause
+ 
+-"""Script to train RL agent with RSL-RL."""
++"""Script to train RL agent with RSL-RL.
++
++RSL-RL 라이브러리를 사용해 강화학습(RL) 에이전트를 학습시키는 스크립트.
++
++전체 실행 흐름:
++    1. CLI 인자를 파싱하고 Isaac Sim 시뮬레이터를 기동한다 (``launch_simulation``).
++    2. Hydra 데코레이터가 태스크에 등록된 환경 설정(``env_cfg``)과 에이전트 설정(``agent_cfg``)을 로드한다.
++    3. ``gym.make()`` 로 환경을 만들고 RSL-RL 전용 래퍼(``RslRlVecEnvWrapper``)로 감싼다.
++    4. ``OnPolicyRunner``(PPO 계열) 또는 ``DistillationRunner``(교사-학생 증류)로 학습을 실행한다.
++
++실행 예시::
++
++    ./isaaclab.bat -p scripts/reinforcement_learning/rsl_rl/train.py --task Isaac-Cartpole-v0 --headless
++"""
+ 
+ import warnings
+ 
++# 이 스크립트는 사용 중단(deprecated) 예정이다.
++# 대신 통합 CLI인 `./isaaclab.sh train --rl_library rsl_rl --task <TASK>` 사용이 권장된다.
+ warnings.warn(
+     "scripts/reinforcement_learning/rsl_rl/train.py is deprecated. Use "
+     "`./isaaclab.sh train --rl_library rsl_rl --task <TASK>` instead. "
+@@ -15,6 +30,7 @@ warnings.warn(
+     stacklevel=1,
+ )
+ 
++# 표준 라이브러리
+ import argparse
+ import contextlib
+ import importlib.metadata as metadata
+@@ -25,88 +41,111 @@ import sys
+ import time
+ from datetime import datetime
+ 
+-import gymnasium as gym
++# 서드파티 라이브러리
++import gymnasium as gym  # RL 환경 표준 인터페이스 (환경 생성/래핑)
+ import torch
+-from packaging import version
+-from rsl_rl.runners import DistillationRunner, OnPolicyRunner
++from packaging import version  # 버전 문자열 비교 유틸
++from rsl_rl.runners import DistillationRunner, OnPolicyRunner  # RSL-RL이 제공하는 학습 러너들
+ 
+-from isaaclab.envs import DirectMARLEnvCfg, DirectRLEnvCfg, ManagerBasedRLEnvCfg
+-from isaaclab.utils.dict import print_dict
+-from isaaclab.utils.io import dump_yaml
+-from isaaclab.utils.seed import configure_seed
+-from isaaclab.utils.string import list_intersection, string_to_callable
++# Isaac Lab 핵심 모듈
++from isaaclab.envs import DirectMARLEnvCfg, DirectRLEnvCfg, ManagerBasedRLEnvCfg  # 환경 설정 클래스 3종
++from isaaclab.utils.dict import print_dict  # 딕셔너리를 보기 좋게 출력
++from isaaclab.utils.io import dump_yaml  # 설정 객체를 YAML 파일로 저장
++from isaaclab.utils.seed import configure_seed  # 전역 난수 시드/결정론(deterministic) 설정
++from isaaclab.utils.string import list_intersection, string_to_callable  # 문자열/리스트 유틸
+ 
++# RSL-RL 연동 계층: 러너 설정 클래스, 벡터 환경 래퍼, 구버전 설정 호환 처리
+ from isaaclab_rl.rsl_rl import RslRlBaseRunnerCfg, RslRlVecEnvWrapper, handle_deprecated_rsl_rl_cfg
+ 
++# isaaclab_tasks 를 임포트하는 것만으로 내장 태스크들이 gym 레지스트리에 등록된다
+ import isaaclab_tasks  # noqa: F401
+ from isaaclab_tasks.utils import (
+-    add_launcher_args,
+-    get_checkpoint_path,
+-    launch_simulation,
+-    setup_preset_cli,
++    add_launcher_args,  # 시뮬레이터 실행 관련 공통 CLI 인자 추가
++    get_checkpoint_path,  # 로그 디렉터리에서 체크포인트 경로 탐색
++    launch_simulation,  # Isaac Sim 기동/종료를 관리하는 컨텍스트 매니저
++    setup_preset_cli,  # 프리셋 토큰을 지원하는 CLI 파싱
+ )
+-from isaaclab_tasks.utils.hydra import hydra_task_config
++from isaaclab_tasks.utils.hydra import hydra_task_config  # Hydra 기반 설정 로딩 데코레이터
+ 
+ # local imports
++# 같은 폴더의 cli_args.py — RSL-RL 전용 CLI 인자 정의/적용 헬퍼
+ import cli_args  # isort: skip
+ 
+ logger = logging.getLogger(__name__)
+ 
+ # PLACEHOLDER: Extension template (do not remove this comment)
++# 실험적(experimental) 태스크 패키지가 설치되어 있으면 추가로 등록한다 (없으면 조용히 무시)
+ with contextlib.suppress(ImportError):
+     import isaaclab_tasks_experimental  # noqa: F401
+ 
++# 이 스크립트가 요구하는 rsl-rl-lib 최소 버전
+ RSL_RL_VERSION = "5.0.1"
+ 
++# GPU 연산 설정: TF32 를 허용해 Ampere 이상 GPU에서 행렬곱/합성곱 속도를 높인다 (정밀도 소폭 손해).
++# deterministic=False, benchmark=False 는 PyTorch 기본 동작을 명시적으로 적어둔 것.
+ torch.backends.cuda.matmul.allow_tf32 = True
+ torch.backends.cudnn.allow_tf32 = True
+ torch.backends.cudnn.deterministic = False
+ torch.backends.cudnn.benchmark = False
+ 
+-# -- argparse ----------------------------------------------------------------
++# -- argparse: 커맨드라인 인자 정의 --------------------------------------------
+ parser = argparse.ArgumentParser(description="Train an RL agent with RSL-RL.")
++# 영상 녹화 옵션: --video 를 켜면 video_interval 스텝마다 video_length 스텝 분량을 녹화
+ parser.add_argument("--video", action="store_true", default=False, help="Record videos during training.")
+ parser.add_argument("--video_length", type=int, default=200, help="Length of the recorded video (in steps).")
+ parser.add_argument("--video_interval", type=int, default=2000, help="Interval between video recordings (in steps).")
++# 병렬로 시뮬레이션할 환경 개수 (미지정 시 태스크 기본값 사용)
+ parser.add_argument("--num_envs", type=int, default=None, help="Number of environments to simulate.")
++# 학습할 태스크(환경) 이름, 예: Isaac-Cartpole-v0
+ parser.add_argument("--task", type=str, default=None, help="Name of the task.")
++# 태스크 등록 시 함께 등록된 RL 에이전트 설정 엔트리포인트 이름
+ parser.add_argument(
+     "--agent", type=str, default="rsl_rl_cfg_entry_point", help="Name of the RL agent configuration entry point."
+ )
++# 난수 시드 (실험 재현성 확보용)
+ parser.add_argument("--seed", type=int, default=None, help="Seed used for the environment")
++# 정책 학습 반복(iteration) 횟수
+ parser.add_argument("--max_iterations", type=int, default=None, help="RL Policy training iterations.")
++# 다중 GPU/노드 분산 학습 여부
+ parser.add_argument(
+     "--distributed", action="store_true", default=False, help="Run training with multiple GPUs or nodes."
+ )
++# 관측/행동 공간 명세(IO descriptor)를 파일로 내보낼지 여부 (배포 파이프라인용)
+ parser.add_argument("--export_io_descriptors", action="store_true", default=False, help="Export IO descriptors.")
++# Ray 분산 실험 프레임워크 연동 시 자동으로 채워지는 프로세스 ID
+ parser.add_argument(
+     "--ray-proc-id", "-rid", type=int, default=None, help="Automatically configured by Ray integration, otherwise None."
+ )
++# 커스텀 환경 등록 등 외부 코드를 실행할 콜백 함수 경로 (예: my_pkg.my_module.my_func)
+ parser.add_argument("--external_callback", default=None, help="Fully qualified path to an externally defined callback.")
++# RSL-RL 전용 인자 추가 (--resume, --load_run, --checkpoint, --logger 등)
+ cli_args.add_rsl_rl_args(parser)
++# 시뮬레이터 실행 관련 공통 인자 추가 (--headless, --device, --enable_cameras 등)
+ add_launcher_args(parser)
++# 파싱 실행: 이 파서가 소비하지 못한 인자는 remaining_args 로 남아 Hydra 오버라이드에 쓰인다
+ args_cli, remaining_args = setup_preset_cli(parser)
+ 
++# 영상을 녹화하려면 카메라 렌더링이 필요하므로 자동으로 켠다
+ if args_cli.video:
+     args_cli.enable_cameras = True
+ 
+ 
+-# Call an external callback if requested. This gives opportunity to external code to register the environments
+-# The function is expected to return a list of arguments that were not consumed by the callback.
++# 외부 콜백이 지정된 경우 호출한다. 외부 코드가 자신의 환경을 gym 에 등록할 기회를 준다.
++# 콜백 함수는 자신이 소비하지 않은 인자 목록을 반환해야 한다.
+ remaining_args_env_registration = None
+ if args_cli.external_callback:
+     external_callback_function = string_to_callable(args_cli.external_callback, separator=".")
+     remaining_args_env_registration = external_callback_function()
+ 
+-# clear out sys.argv for Hydra
+-# The remaining arguments are the arguments that were not consumed by both this scripts
+-# argparser and (optionally) the external callback function. Both sides of this
+-# intersection share the same token vocabulary (the callback reads the user's
+-# original sys.argv), so preset tokens like ``physics=NAME`` compare correctly.
++# Hydra 를 위해 sys.argv 를 정리한다.
++# 이 스크립트의 argparser 와 (있다면) 외부 콜백, 양쪽 모두 소비하지 않은 인자만 남긴다.
++# 양쪽 다 사용자의 원본 sys.argv 를 읽으므로 같은 토큰 어휘를 공유하고,
++# 따라서 ``physics=NAME`` 같은 프리셋 토큰이 올바르게 교집합 비교된다.
+ remaining_args = list_intersection(remaining_args, remaining_args_env_registration)
+ sys.argv = [sys.argv[0]] + remaining_args
+ 
+-# -- check RSL-RL version ----------------------------------------------------
++# -- RSL-RL 버전 확인 -----------------------------------------------------------
++# 설치된 rsl-rl-lib 버전이 요구 버전보다 낮으면 설치 명령을 안내하고 종료한다.
+ installed_version = metadata.version("rsl-rl-lib")
+ if version.parse(installed_version) < version.parse(RSL_RL_VERSION):
+     if platform.system() == "Windows":
+@@ -121,62 +160,67 @@ if version.parse(installed_version) < version.parse(RSL_RL_VERSION):
+     exit(1)
+ 
+ 
++# @hydra_task_config: --task 로 지정한 태스크의 환경 설정(env_cfg)과
++# --agent 엔트리포인트의 에이전트 설정(agent_cfg)을 로드하고,
++# Hydra CLI 오버라이드(예: agent.max_iterations=500)를 적용한 뒤 main() 에 넘겨준다.
+ @hydra_task_config(args_cli.task, args_cli.agent)
+ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agent_cfg: RslRlBaseRunnerCfg):
+     """Train with RSL-RL agent."""
++    # Isaac Sim 시뮬레이터를 기동한다. with 블록을 벗어나면 자동으로 종료된다.
+     with launch_simulation(env_cfg, args_cli):
+-        # override configurations with non-hydra CLI arguments
++        # Hydra 를 거치지 않은 CLI 인자(--seed, --num_envs, --max_iterations 등)로 설정을 덮어쓴다
+         agent_cfg = cli_args.update_rsl_rl_cfg(agent_cfg, args_cli)
+         env_cfg.scene.num_envs = args_cli.num_envs if args_cli.num_envs is not None else env_cfg.scene.num_envs
+         agent_cfg.max_iterations = (
+             args_cli.max_iterations if args_cli.max_iterations is not None else agent_cfg.max_iterations
+         )
+ 
+-        # handle deprecated configurations
++        # 구버전 형식의 설정 필드를 현재 설치된 rsl-rl 버전에 맞게 변환한다
+         agent_cfg = handle_deprecated_rsl_rl_cfg(agent_cfg, installed_version)
+ 
+-        # set the environment seed
+-        # note: certain randomizations occur in the environment initialization so we set the seed here
++        # 환경 시드 설정
++        # 참고: 일부 무작위화(randomization)는 환경 초기화 시점에 일어나므로 여기서 미리 시드를 넣는다
+         env_cfg.seed = agent_cfg.seed
+-        # For distributed training, launch_simulation() already resolved the
+-        # correct per-rank device; only apply a CLI --device override for
+-        # non-distributed runs (the default "cuda:0" would clobber the
+-        # per-rank device otherwise).
++        # 분산 학습에서는 launch_simulation() 이 이미 랭크별(per-rank) 디바이스를 결정해 두었다.
++        # 따라서 CLI --device 오버라이드는 비분산 실행에만 적용한다.
++        # (그렇지 않으면 기본값 "cuda:0" 이 랭크별 디바이스를 덮어써 버린다.)
+         if not args_cli.distributed:
+             env_cfg.sim.device = args_cli.device if args_cli.device is not None else env_cfg.sim.device
+-        # check for invalid combination of CPU device with distributed training
++        # CPU 디바이스 + 분산 학습은 지원되지 않는 조합이므로 미리 차단한다
+         if args_cli.distributed and args_cli.device is not None and "cpu" in args_cli.device:
+             raise ValueError(
+                 "Distributed training is not supported when using CPU device. "
+                 "Please use GPU device (e.g., --device cuda) for distributed training."
+             )
+ 
+-        # multi-gpu training configuration
++        # 다중 GPU(분산) 학습 설정
+         if args_cli.distributed:
+-            global_rank = int(os.getenv("RANK", "0"))
+-            # env_cfg.sim.device is resolved by launch_simulation() which
+-            # accounts for CUDA_VISIBLE_DEVICES restrictions.
++            global_rank = int(os.getenv("RANK", "0"))  # torchrun 등 런처가 넣어주는 전역 랭크
++            # env_cfg.sim.device 는 launch_simulation() 이 CUDA_VISIBLE_DEVICES 제한까지
++            # 고려해 결정한 값이므로, 에이전트도 같은 디바이스를 사용한다.
+             agent_cfg.device = env_cfg.sim.device
+ 
+-            # use global rank for seed diversity across all nodes
++            # 모든 노드에 걸쳐 시드가 겹치지 않도록 전역 랭크를 시드에 더해준다
+             seed = agent_cfg.seed + global_rank
+             env_cfg.seed = seed
+             agent_cfg.seed = seed
+ 
+-        # specify directory for logging experiments
++        # 실험 로그 루트 디렉터리: logs/rsl_rl/<experiment_name>
+         log_root_path = os.path.join("logs", "rsl_rl", agent_cfg.experiment_name)
+         log_root_path = os.path.abspath(log_root_path)
+         print(f"[INFO] Logging experiment in directory: {log_root_path}")
+-        # specify directory for logging runs: {time-stamp}_{run_name}
++        # 개별 실행(run) 디렉터리 이름: {타임스탬프}_{run_name}
+         log_dir = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+         # The Ray Tune workflow extracts experiment name using the logging line below, hence, do not
+         # change it (see PR #2346, comment-2819298849)
++        # (주의: Ray Tune 워크플로우가 아래 print 문에서 실험 이름을 추출하므로 이 줄은 바꾸면 안 된다)
+         print(f"Exact experiment name requested from command line: {log_dir}")
+         if agent_cfg.run_name:
+             log_dir += f"_{agent_cfg.run_name}"
+         log_dir = os.path.join(log_root_path, log_dir)
+ 
+-        # set the IO descriptors export flag if requested
++        # 요청 시 IO descriptor(관측/행동 명세) 내보내기 플래그를 설정한다.
++        # Manager 기반 RL 환경에서만 지원되는 기능이다.
+         if isinstance(env_cfg, ManagerBasedRLEnvCfg):
+             env_cfg.export_io_descriptors = args_cli.export_io_descriptors
+         else:
+@@ -185,69 +229,73 @@ def main(env_cfg: ManagerBasedRLEnvCfg | DirectRLEnvCfg | DirectMARLEnvCfg, agen
+                 " No IO descriptors will be exported."
+             )
+ 
+-        # set the log directory for the environment (works for all environment types)
++        # 환경에 로그 디렉터리를 알려준다 (모든 환경 타입에서 동작)
+         env_cfg.log_dir = log_dir
+ 
+-        # create isaac environment
++        # Isaac 환경 생성 (영상 녹화 시에는 rgb_array 렌더 모드가 필요하다)
+         env = gym.make(args_cli.task, cfg=env_cfg, render_mode="rgb_array" if args_cli.video else None)
+ 
+-        # convert to single-agent instance if required by the RL algorithm
++        # RSL-RL 은 단일 에이전트 전용이므로, 멀티 에이전트(MARL) 환경이면 단일 에이전트 형태로 변환한다
+         if isinstance(env.unwrapped.cfg, DirectMARLEnvCfg):
+             from isaaclab.envs import multi_agent_to_single_agent
+ 
+             env = multi_agent_to_single_agent(env)
+ 
+-        # save resume path before creating a new log_dir
++        # 새 log_dir 가 만들어지기 전에, 이어서 학습(resume)하거나 증류(Distillation)에 쓸
++        # 이전 실행의 체크포인트 경로를 미리 찾아둔다
+         if agent_cfg.resume or agent_cfg.algorithm.class_name == "Distillation":
+             resume_path = get_checkpoint_path(log_root_path, agent_cfg.load_run, agent_cfg.load_checkpoint)
+ 
+-        # wrap for video recording
++        # 영상 녹화 래퍼 적용
+         if args_cli.video:
+             video_kwargs = {
+-                "video_folder": os.path.join(log_dir, "videos", "train"),
+-                "step_trigger": lambda step: step % args_cli.video_interval == 0,
+-                "video_length": args_cli.video_length,
++                "video_folder": os.path.join(log_dir, "videos", "train"),  # 영상 저장 폴더
++                "step_trigger": lambda step: step % args_cli.video_interval == 0,  # 녹화 시작 조건
++                "video_length": args_cli.video_length,  # 녹화 길이 (스텝 수)
+                 "disable_logger": True,
+             }
+             print("[INFO] Recording videos during training.")
+             print_dict(video_kwargs, nesting=4)
+             env = gym.wrappers.RecordVideo(env, **video_kwargs)
+ 
+-        start_time = time.time()
++        start_time = time.time()  # 총 학습 시간 측정 시작
+ 
+-        # wrap around environment for rsl-rl
++        # RSL-RL 이 기대하는 VecEnv 인터페이스로 환경을 감싼다 (필요 시 행동 클리핑 포함)
+         env = RslRlVecEnvWrapper(env, clip_actions=agent_cfg.clip_actions)
+ 
+-        # create runner from rsl-rl
++        # 설정에 지정된 러너 생성: OnPolicyRunner(PPO 등) 또는 DistillationRunner(교사-학생 증류)
+         if agent_cfg.class_name == "OnPolicyRunner":
+             runner = OnPolicyRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
+         elif agent_cfg.class_name == "DistillationRunner":
+             runner = DistillationRunner(env, agent_cfg.to_dict(), log_dir=log_dir, device=agent_cfg.device)
+         else:
+             raise ValueError(f"Unsupported runner class: {agent_cfg.class_name}")
+-        # configure_seed must be called after runner construction so that PyTorch deterministic settings
+-        # do not interfere with the runner's internal initialization.
++        # configure_seed 는 반드시 러너 생성 이후에 호출해야 한다.
++        # PyTorch 결정론(deterministic) 설정이 러너 내부 초기화를 방해하지 않도록 하기 위함이다.
+         if args_cli.deterministic:
+             configure_seed(env_cfg.seed, True)
+-        # write git state to logs
++        # 재현성을 위해 현재 git 상태(커밋 해시/디프)를 로그에 기록한다
+         runner.add_git_repo_to_log(__file__)
+-        # load the checkpoint
++        # 체크포인트 로드
+         if agent_cfg.resume or agent_cfg.algorithm.class_name == "Distillation":
+             print(f"[INFO]: Loading model checkpoint from: {resume_path}")
+-            # load previously trained model
++            # 이전에 학습된 모델 불러오기
+             runner.load(resume_path)
+ 
+-        # dump the configuration into log-directory
++        # 사용된 환경/에이전트 설정을 YAML 로 로그 디렉터리에 저장한다 (재현성)
+         dump_yaml(os.path.join(log_dir, "params", "env.yaml"), env_cfg)
+         dump_yaml(os.path.join(log_dir, "params", "agent.yaml"), agent_cfg)
+ 
+-        # run training
++        # 학습 실행
+         try:
++            # init_at_random_ep_len=True: 에피소드 시작 길이를 무작위화해
++            # 모든 환경이 동시에 리셋되는 것을 방지한다
+             runner.learn(num_learning_iterations=agent_cfg.max_iterations, init_at_random_ep_len=True)
+             print(f"Training time: {round(time.time() - start_time, 2)} seconds")
+-            # close the simulator
++            # 시뮬레이터(환경) 종료
+             env.close()
+         except KeyboardInterrupt:
++            # Ctrl+C 로 학습을 중단하면 오류 없이 조용히 빠져나온다
+             pass
+ 
+ 
+diff --git a/source/isaaclab_tasks/isaaclab_tasks/direct/cart_double_pendulum/cart_double_pendulum_env_cfg.py b/source/isaaclab_tasks/isaaclab_tasks/direct/cart_double_pendulum/cart_double_pendulum_env_cfg.py
+index 538e2e4c..7e005d81 100644
+--- a/source/isaaclab_tasks/isaaclab_tasks/direct/cart_double_pendulum/cart_double_pendulum_env_cfg.py
++++ b/source/isaaclab_tasks/isaaclab_tasks/direct/cart_double_pendulum/cart_double_pendulum_env_cfg.py
+@@ -5,15 +5,38 @@
+ 
+ from __future__ import annotations
+ 
++from isaaclab_newton.physics import MJWarpSolverCfg, NewtonCfg
++from isaaclab_physx.physics import PhysxCfg
++
+ from isaaclab.assets import ArticulationCfg
+ from isaaclab.envs import DirectMARLEnvCfg
+ from isaaclab.scene import InteractiveSceneCfg
+ from isaaclab.sim import SimulationCfg
+ from isaaclab.utils.configclass import configclass
+ 
++from isaaclab_tasks.utils import PresetCfg
++
+ from isaaclab_assets.robots.cart_double_pendulum import CART_DOUBLE_PENDULUM_CFG
+ 
+ 
++@configclass
++class CartDoublePendulumPhysicsCfg(PresetCfg):
++    default: PhysxCfg = PhysxCfg()
++    physx: PhysxCfg = PhysxCfg()
++    newton_mjwarp: NewtonCfg = NewtonCfg(
++        solver_cfg=MJWarpSolverCfg(
++            njmax=10,
++            nconmax=4,
++            cone="pyramidal",
++            impratio=1,
++            integrator="implicitfast",
++        ),
++        num_substeps=1,
++        debug_mode=False,
++        use_cuda_graph=True,
++    )
++
++
+ @configclass
+ class CartDoublePendulumEnvCfg(DirectMARLEnvCfg):
+     # env
+@@ -25,7 +48,9 @@ class CartDoublePendulumEnvCfg(DirectMARLEnvCfg):
+     state_space = -1
+ 
+     # simulation
+-    sim: SimulationCfg = SimulationCfg(dt=1 / 120, render_interval=decimation)
++    sim: SimulationCfg = SimulationCfg(
++        dt=1 / 120, render_interval=decimation, physics=CartDoublePendulumPhysicsCfg()
++    )
+ 
+     # robot
+     robot_cfg: ArticulationCfg = CART_DOUBLE_PENDULUM_CFG.replace(prim_path="/World/envs/env_.*/Robot")
+diff --git a/source/isaaclab_tasks/isaaclab_tasks/direct/cartpole/cartpole_env_cfg.py b/source/isaaclab_tasks/isaaclab_tasks/direct/cartpole/cartpole_env_cfg.py
+index 11720f0c..0d2c27e5 100644
+--- a/source/isaaclab_tasks/isaaclab_tasks/direct/cartpole/cartpole_env_cfg.py
++++ b/source/isaaclab_tasks/isaaclab_tasks/direct/cartpole/cartpole_env_cfg.py
+@@ -66,7 +66,7 @@ class CartpolePhysicsCfg(PresetCfg):
+ class CartpoleEnvCfg(DirectRLEnvCfg):
+     # env
+     decimation = 2
+-    episode_length_s = 5.0
++    episode_length_s = 5.0     # 기존값 5.0s
+     action_scale = 100.0  # [N]
+     action_space = 1
+     observation_space = 4
+@@ -93,5 +93,5 @@ class CartpoleEnvCfg(DirectRLEnvCfg):
+     rew_scale_alive = 1.0
+     rew_scale_terminated = -2.0
+     rew_scale_pole_pos = -1.0
+-    rew_scale_cart_vel = -0.01
++    rew_scale_cart_vel = -0.01   # 기존값 -0.01
+     rew_scale_pole_vel = -0.005

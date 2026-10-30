@@ -1,0 +1,30 @@
+{
+  "capstone": {
+    "head": "fbaf458ca4acbd9640789e990c4dc9e4ab4cb204",
+    "tracked_changes": ""
+  },
+  "isaaclab": {
+    "head": "28a37cecdd433c22d9eabd6a5954add9f13a8951",
+    "changed_files": {
+      "imgui.ini": "56b6841837df429d4dee62142734e639f55ed77f38d0ee731b88d7bd0d3053af",
+      "mars_terrain/scripts/visualize_gale_terrain_material.py": "b267dc7fb355c007e3d60d4be7d7232cbd5f7818f645847583d0838cf2016635",
+      "scripts/reinforcement_learning/rsl_rl/train.py": "eb9ba469cd874429c363f27747c28505f280113fa4e950e8000734ef7477ad39",
+      "source/isaaclab_tasks/isaaclab_tasks/direct/cart_double_pendulum/cart_double_pendulum_env_cfg.py": "dd4587d46047a7d960f2ecda238f47176db530c670b2dded32d3a00f2c6a29b4",
+      "source/isaaclab_tasks/isaaclab_tasks/direct/cartpole/cartpole_env_cfg.py": "92ca606f206dd88503cb1df2574c790e8de00b698f8e382739eb1924ed43f4ea",
+      "mars_terrain/scripts/mars_rocks.py": "b4f79bfd387084951955a19e600649397b0f5ad4ab3ceabc6f6c538ae7df1f14",
+      "mars_terrain/scripts/run_mars_rocks_demo.py": "9fc88151b9aa67a3505e9e1ad72e87742bdf52a1be89780087f754b1002b780d",
+      "mars_terrain/scripts/run_mars_rocks_demo_fixed.py": "bb7157e160028323beaf739cbeedff1f5d020b6ff4860ae84a67d8b89860daf2",
+      "scripts/g1_mars_probe.py": "89ac1bb28eb848634ee6c727062e71b1e2ecb3ff5c610212db36265adbc5af49"
+    }
+  },
+  "earlier_attempts": {
+    "h1_mars_mpm_uphill": {
+      "files": 961,
+      "digest": "05285d9500bc248c228b4ea1c2e797cf882dff7fc036a88016fa28bb26e935f7"
+    },
+    "h1_mars_team_guide_uphill": {
+      "files": 443,
+      "digest": "ec97dd7acdab9e5eea6427987e800f427bb3ce9c74e60733d74a547a0090fd9d"
+    }
+  }
+}

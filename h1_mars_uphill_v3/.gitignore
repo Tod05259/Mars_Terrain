@@ -1,0 +1,19 @@
+# caches and scratch
+.work/
+__pycache__/
+*.pyc
+# local paths (each PC has its own)
+configs/paths.json
+# large or regenerable outputs
+logs/
+runs/
+snapshots/
+recordings/
+*.pkl
+*.usd
+*.usda
+*.usdc
+# keep adopted checkpoints and small results
+!checkpoints/*.pt
+# Isaac Lab's play.py writes JIT/ONNX exports next to the checkpoint on every run
+checkpoints/exported/

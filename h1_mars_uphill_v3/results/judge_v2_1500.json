@@ -1,0 +1,49 @@
+{
+  "checkpoint": "C:\\Users\\2hj05\\repos\\Mars_Terrain\\h1_mars_uphill_v3\\logs\\rsl_rl\\h1_ascend_mars_soil\\2026-10-12_01-47-56_ascend_v2\\model_1500.pt",
+  "conditions": {
+    "slope16": {
+      "episodes": 12,
+      "reached": 9,
+      "held": 5,
+      "valid": 3,
+      "success": 3,
+      "fallen": 5,
+      "diverged": 0,
+      "slid_back": 0,
+      "off_patch": 0,
+      "timeout": 2,
+      "success_rate": 0.25,
+      "success_wilson95": [
+        0.08894003962896138,
+        0.53231033912066
+      ],
+      "climbed_mean_m": 3.0596746504306793,
+      "reached_at_median_s": 22.400000000000002,
+      "pass_line": 0.8,
+      "verdict": "\ubbf8\ub2ec",
+      "baseline": "6/10"
+    },
+    "slope20": {
+      "episodes": 12,
+      "reached": 0,
+      "held": 0,
+      "valid": 0,
+      "success": 0,
+      "fallen": 10,
+      "diverged": 0,
+      "slid_back": 1,
+      "off_patch": 1,
+      "timeout": 0,
+      "success_rate": 0.0,
+      "success_wilson95": [
+        0.0,
+        0.2425007574992425
+      ],
+      "climbed_mean_m": 1.3058573702971141,
+      "reached_at_median_s": null,
+      "pass_line": 0.6,
+      "verdict": "\ubbf8\ub2ec",
+      "baseline": "1/10"
+    }
+  }
+}

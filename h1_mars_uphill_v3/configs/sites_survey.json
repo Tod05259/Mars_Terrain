@@ -1,0 +1,621 @@
+{
+  "args": {
+    "targets": [
+      16.8,
+      20.0,
+      22.5
+    ],
+    "tolerance": 1.5,
+    "segment_tolerance": 3.5,
+    "max_relief": 0.15,
+    "climb_m": 3.0,
+    "runway_m": 1.0,
+    "corridor_half_w": 0.75,
+    "env_pitch": 8.0,
+    "step": 0.5,
+    "top": 3,
+    "output": "C:\\Users\\2hj05\\repos\\Mars_Terrain\\h1_mars_uphill_v3\\configs\\sites_survey.json"
+  },
+  "candidates": {
+    "16.8": [
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          9.35,
+          9.85
+        ],
+        "tilt_deg": 16.87,
+        "corridor_tilt_deg": 16.8,
+        "segment_tilt_deg": [
+          16.4,
+          17.7,
+          16.5,
+          16.2,
+          15.8
+        ],
+        "relief_m": 0.124,
+        "uphill_yaw_deg": -155.0,
+        "corridor_yaw_offset_deg": 7.1,
+        "site_z_m": 35.015
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          -7.64,
+          -10.14
+        ],
+        "tilt_deg": 16.81,
+        "corridor_tilt_deg": 16.24,
+        "segment_tilt_deg": [
+          17.2,
+          16.8,
+          15.7,
+          16.0,
+          16.1
+        ],
+        "relief_m": 0.051,
+        "uphill_yaw_deg": 101.7,
+        "corridor_yaw_offset_deg": 0.0,
+        "site_z_m": 7.894
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          0.86,
+          -7.14
+        ],
+        "tilt_deg": 16.83,
+        "corridor_tilt_deg": 17.81,
+        "segment_tilt_deg": [
+          15.8,
+          18.2,
+          18.0,
+          17.8,
+          17.8
+        ],
+        "relief_m": 0.049,
+        "uphill_yaw_deg": 98.8,
+        "corridor_yaw_offset_deg": 0.8,
+        "site_z_m": 8.381
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          -7.64,
+          -5.14
+        ],
+        "tilt_deg": 16.8,
+        "corridor_tilt_deg": 16.29,
+        "segment_tilt_deg": [
+          16.8,
+          16.7,
+          16.4,
+          15.9,
+          14.7
+        ],
+        "relief_m": 0.064,
+        "uphill_yaw_deg": 92.3,
+        "corridor_yaw_offset_deg": -3.8,
+        "site_z_m": 9.351
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          -3.14,
+          -8.64
+        ],
+        "tilt_deg": 16.85,
+        "corridor_tilt_deg": 18.09,
+        "segment_tilt_deg": [
+          17.2,
+          17.3,
+          18.5,
+          18.6,
+          18.5
+        ],
+        "relief_m": 0.045,
+        "uphill_yaw_deg": 95.5,
+        "corridor_yaw_offset_deg": 0.7,
+        "site_z_m": 8.071
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          -9.64,
+          -9.64
+        ],
+        "tilt_deg": 16.79,
+        "corridor_tilt_deg": 15.46,
+        "segment_tilt_deg": [
+          18.0,
+          15.6,
+          15.4,
+          14.7,
+          14.4
+        ],
+        "relief_m": 0.065,
+        "uphill_yaw_deg": 98.7,
+        "corridor_yaw_offset_deg": 0.1,
+        "site_z_m": 8.168
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          2.86,
+          -5.14
+        ],
+        "tilt_deg": 16.85,
+        "corridor_tilt_deg": 17.16,
+        "segment_tilt_deg": [
+          16.8,
+          16.8,
+          17.3,
+          17.4,
+          16.8
+        ],
+        "relief_m": 0.053,
+        "uphill_yaw_deg": 107.1,
+        "corridor_yaw_offset_deg": 3.3,
+        "site_z_m": 8.867
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          3.36,
+          -2.64
+        ],
+        "tilt_deg": 16.8,
+        "corridor_tilt_deg": 15.6,
+        "segment_tilt_deg": [
+          17.0,
+          17.3,
+          15.2,
+          14.3,
+          13.8
+        ],
+        "relief_m": 0.089,
+        "uphill_yaw_deg": 111.9,
+        "corridor_yaw_offset_deg": 2.4,
+        "site_z_m": 9.521
+      },
+      {
+        "terrain": "jezero_neretva_neretva_center",
+        "usd": "jezero_neretva_neretva_center_1024px_stride2_crop30m_r120c820_env.usd",
+        "calibrated_2axis": false,
+        "site_xy": [
+          -6.14,
+          -8.14
+        ],
+        "tilt_deg": 16.88,
+        "corridor_tilt_deg": 17.58,
+        "segment_tilt_deg": [
+          16.4,
+          17.1,
+          18.2,
+          17.7,
+          17.3
+        ],
+        "relief_m": 0.077,
+        "uphill_yaw_deg": 101.6,
+        "corridor_yaw_offset_deg": -4.1,
+        "site_z_m": 8.363
+      }
+    ],
+    "20": [
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          8.35,
+          7.35
+        ],
+        "tilt_deg": 20.03,
+        "corridor_tilt_deg": 20.8,
+        "segment_tilt_deg": [
+          19.7,
+          20.6,
+          20.8,
+          21.1,
+          21.0
+        ],
+        "relief_m": 0.077,
+        "uphill_yaw_deg": -138.3,
+        "corridor_yaw_offset_deg": 4.4,
+        "site_z_m": 35.763
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          5.35,
+          7.35
+        ],
+        "tilt_deg": 19.87,
+        "corridor_tilt_deg": 20.86,
+        "segment_tilt_deg": [
+          19.3,
+          21.1,
+          21.3,
+          20.5,
+          21.4
+        ],
+        "relief_m": 0.074,
+        "uphill_yaw_deg": -130.7,
+        "corridor_yaw_offset_deg": -2.0,
+        "site_z_m": 36.507
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -10.15,
+          9.35
+        ],
+        "tilt_deg": 20.08,
+        "corridor_tilt_deg": 22.1,
+        "segment_tilt_deg": [
+          19.1,
+          21.3,
+          22.5,
+          23.1,
+          23.0
+        ],
+        "relief_m": 0.127,
+        "uphill_yaw_deg": -136.3,
+        "corridor_yaw_offset_deg": 2.2,
+        "site_z_m": 40.729
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          8.35,
+          3.85
+        ],
+        "tilt_deg": 20.16,
+        "corridor_tilt_deg": 20.63,
+        "segment_tilt_deg": [
+          19.4,
+          20.2,
+          20.6,
+          20.9,
+          22.3
+        ],
+        "relief_m": 0.144,
+        "uphill_yaw_deg": -150.4,
+        "corridor_yaw_offset_deg": 2.1,
+        "site_z_m": 36.662
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -2.65,
+          9.35
+        ],
+        "tilt_deg": 20.23,
+        "corridor_tilt_deg": 21.51,
+        "segment_tilt_deg": [
+          19.8,
+          19.8,
+          21.7,
+          22.7,
+          22.8
+        ],
+        "relief_m": 0.149,
+        "uphill_yaw_deg": -153.1,
+        "corridor_yaw_offset_deg": 6.7,
+        "site_z_m": 38.507
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          1.85,
+          9.85
+        ],
+        "tilt_deg": 19.57,
+        "corridor_tilt_deg": 22.0,
+        "segment_tilt_deg": [
+          18.1,
+          20.8,
+          23.0,
+          23.3,
+          22.6
+        ],
+        "relief_m": 0.124,
+        "uphill_yaw_deg": -151.2,
+        "corridor_yaw_offset_deg": 1.7,
+        "site_z_m": 36.827
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          6.85,
+          5.85
+        ],
+        "tilt_deg": 21.1,
+        "corridor_tilt_deg": 20.85,
+        "segment_tilt_deg": [
+          20.9,
+          21.4,
+          21.0,
+          19.7,
+          21.8
+        ],
+        "relief_m": 0.055,
+        "uphill_yaw_deg": -133.3,
+        "corridor_yaw_offset_deg": 3.1,
+        "site_z_m": 36.572
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -8.15,
+          8.85
+        ],
+        "tilt_deg": 21.0,
+        "corridor_tilt_deg": 22.6,
+        "segment_tilt_deg": [
+          20.3,
+          22.4,
+          22.7,
+          22.9,
+          23.2
+        ],
+        "relief_m": 0.142,
+        "uphill_yaw_deg": -137.4,
+        "corridor_yaw_offset_deg": 4.8,
+        "site_z_m": 40.316
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -4.65,
+          8.85
+        ],
+        "tilt_deg": 21.25,
+        "corridor_tilt_deg": 22.93,
+        "segment_tilt_deg": [
+          20.7,
+          22.6,
+          22.9,
+          23.4,
+          23.5
+        ],
+        "relief_m": 0.134,
+        "uphill_yaw_deg": -146.3,
+        "corridor_yaw_offset_deg": 5.6,
+        "site_z_m": 39.243
+      }
+    ],
+    "22.5": [
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -1.15,
+          8.35
+        ],
+        "tilt_deg": 22.55,
+        "corridor_tilt_deg": 22.38,
+        "segment_tilt_deg": [
+          22.9,
+          22.6,
+          22.2,
+          22.0,
+          22.7
+        ],
+        "relief_m": 0.051,
+        "uphill_yaw_deg": -146.8,
+        "corridor_yaw_offset_deg": 1.1,
+        "site_z_m": 38.202
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          0.85,
+          8.85
+        ],
+        "tilt_deg": 22.52,
+        "corridor_tilt_deg": 23.09,
+        "segment_tilt_deg": [
+          22.0,
+          23.8,
+          23.5,
+          22.7,
+          22.1
+        ],
+        "relief_m": 0.069,
+        "uphill_yaw_deg": -147.6,
+        "corridor_yaw_offset_deg": 2.0,
+        "site_z_m": 37.359
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -4.15,
+          7.85
+        ],
+        "tilt_deg": 22.53,
+        "corridor_tilt_deg": 23.59,
+        "segment_tilt_deg": [
+          22.5,
+          23.1,
+          23.5,
+          24.1,
+          24.8
+        ],
+        "relief_m": 0.065,
+        "uphill_yaw_deg": -143.9,
+        "corridor_yaw_offset_deg": 0.9,
+        "site_z_m": 39.33
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          5.35,
+          1.85
+        ],
+        "tilt_deg": 22.42,
+        "corridor_tilt_deg": 23.54,
+        "segment_tilt_deg": [
+          22.1,
+          23.3,
+          23.7,
+          23.9,
+          24.3
+        ],
+        "relief_m": 0.065,
+        "uphill_yaw_deg": -143.7,
+        "corridor_yaw_offset_deg": 0.1,
+        "site_z_m": 38.026
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -10.15,
+          7.85
+        ],
+        "tilt_deg": 22.59,
+        "corridor_tilt_deg": 22.84,
+        "segment_tilt_deg": [
+          22.5,
+          23.0,
+          23.3,
+          22.8,
+          21.5
+        ],
+        "relief_m": 0.06,
+        "uphill_yaw_deg": -131.0,
+        "corridor_yaw_offset_deg": 0.9,
+        "site_z_m": 41.179
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          2.85,
+          6.85
+        ],
+        "tilt_deg": 22.53,
+        "corridor_tilt_deg": 23.48,
+        "segment_tilt_deg": [
+          22.4,
+          23.1,
+          23.0,
+          24.0,
+          25.0
+        ],
+        "relief_m": 0.091,
+        "uphill_yaw_deg": -133.4,
+        "corridor_yaw_offset_deg": -2.4,
+        "site_z_m": 37.3
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          8.85,
+          -0.15
+        ],
+        "tilt_deg": 22.55,
+        "corridor_tilt_deg": 23.44,
+        "segment_tilt_deg": [
+          22.2,
+          22.5,
+          23.3,
+          24.2,
+          25.2
+        ],
+        "relief_m": 0.083,
+        "uphill_yaw_deg": -147.1,
+        "corridor_yaw_offset_deg": -1.7,
+        "site_z_m": 37.224
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          -6.15,
+          8.35
+        ],
+        "tilt_deg": 22.43,
+        "corridor_tilt_deg": 23.37,
+        "segment_tilt_deg": [
+          22.3,
+          23.1,
+          23.7,
+          23.4,
+          23.7
+        ],
+        "relief_m": 0.082,
+        "uphill_yaw_deg": -140.7,
+        "corridor_yaw_offset_deg": 4.6,
+        "site_z_m": 39.859
+      },
+      {
+        "terrain": "gusev_spirit_rough_columbia_hills_highland",
+        "usd": "gusev_spirit_rough_columbia_hills_highland_1024px_stride2_crop30m_r930c800_env.usd",
+        "calibrated_2axis": true,
+        "site_xy": [
+          0.85,
+          0.85
+        ],
+        "tilt_deg": 22.55,
+        "corridor_tilt_deg": 23.93,
+        "segment_tilt_deg": [
+          22.0,
+          22.3,
+          24.0,
+          25.4,
+          25.9
+        ],
+        "relief_m": 0.106,
+        "uphill_yaw_deg": -135.9,
+        "corridor_yaw_offset_deg": 1.7,
+        "site_z_m": 39.808
+      }
+    ]
+  }
+}

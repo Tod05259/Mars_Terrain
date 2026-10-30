@@ -1,0 +1,6 @@
+{
+  "_comment": "Copy to configs/paths.json and edit for your PC. run.ps1 reads paths.json first, then this file.",
+  "isaaclab_root": "C:/IsaacLab-3.0.0-beta2",
+  "capstone_root": "C:/Users/2hj05/repos/CAPSTONE",
+  "capstone_commit": "fbaf458"
+}

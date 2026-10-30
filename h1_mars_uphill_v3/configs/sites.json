@@ -1,0 +1,17 @@
+{
+  "_comment": "Uphill judge sites (workflow(3) step 1, D4). Picked by scripts/survey_slopes.py (configs/sites_survey.json) on the Gusev highland 30 m crop: Columbia Hills, the climb Spirit made; two-axis calibrated sand (TEAM_GUIDE section 3). uphill_yaw_deg = robot heading that faces up the fall line (07 --spawn-yaw-deg).",
+  "terrain_prefix": "gusev_spirit_rough_columbia_hills_highland",
+  "bed": {
+    "mpm_spacing": 0.0125,
+    "mpm_depth": 0.25,
+    "mpm_depth_noise_amp": 0.12,
+    "mpm_depth_noise_seed": 11,
+    "patch_m": 2.0,
+    "tag": "irregular_s11_w20"
+  },
+  "sites": {
+    "slope16": {"target_deg": 16.8, "site_xy": [9.35, 9.85], "tilt_deg": 16.87, "segment_tilt_deg": [16.4, 17.7, 16.5, 16.2, 15.8], "relief_m": 0.124, "uphill_yaw_deg": -155.0, "role": "main"},
+    "slope20": {"target_deg": 20.0, "site_xy": [8.35, 7.35], "tilt_deg": 20.03, "segment_tilt_deg": [19.7, 20.6, 20.8, 21.1, 21.0], "relief_m": 0.077, "uphill_yaw_deg": -138.3, "role": "secondary"},
+    "slope22": {"target_deg": 22.5, "site_xy": [-1.15, 8.35], "tilt_deg": 22.55, "segment_tilt_deg": [22.9, 22.6, 22.2, 22.0, 22.7], "relief_m": 0.051, "uphill_yaw_deg": -146.8, "role": "report"}
+  }
+}

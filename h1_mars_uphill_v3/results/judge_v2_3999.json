@@ -1,0 +1,49 @@
+{
+  "checkpoint": "logs\\rsl_rl\\h1_ascend_mars_soil\\2026-10-12_01-47-56_ascend_v2\\model_3999.pt",
+  "conditions": {
+    "slope16": {
+      "episodes": 12,
+      "reached": 1,
+      "held": 1,
+      "valid": 1,
+      "success": 1,
+      "fallen": 2,
+      "diverged": 0,
+      "slid_back": 8,
+      "off_patch": 1,
+      "timeout": 0,
+      "success_rate": 0.08333333333333333,
+      "success_wilson95": [
+        0.014864709450773478,
+        0.35388592179859524
+      ],
+      "climbed_mean_m": 1.640878717104594,
+      "reached_at_median_s": 20.900000000000002,
+      "pass_line": 0.8,
+      "verdict": "\ubbf8\ub2ec",
+      "baseline": "6/10"
+    },
+    "slope20": {
+      "episodes": 12,
+      "reached": 0,
+      "held": 0,
+      "valid": 0,
+      "success": 0,
+      "fallen": 3,
+      "diverged": 0,
+      "slid_back": 7,
+      "off_patch": 2,
+      "timeout": 0,
+      "success_rate": 0.0,
+      "success_wilson95": [
+        0.0,
+        0.2425007574992425
+      ],
+      "climbed_mean_m": 0.7343438491225243,
+      "reached_at_median_s": null,
+      "pass_line": 0.6,
+      "verdict": "\ubbf8\ub2ec",
+      "baseline": "1/10"
+    }
+  }
+}

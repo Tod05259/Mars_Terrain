@@ -1,0 +1,134 @@
+[
+  {
+    "iter": 2000,
+    "site": "slope20",
+    "episodes": 12,
+    "reached": 11,
+    "held": 11,
+    "valid": 12,
+    "success": 11,
+    "fallen": 0,
+    "diverged": 0,
+    "slid_back": 0,
+    "off_patch": 1,
+    "timeout": 0,
+    "success_rate": 0.9166666666666666,
+    "success_wilson95": [
+      0.6461140782014047,
+      0.9851352905492264
+    ],
+    "climbed_mean_m": 3.213168740272522,
+    "reached_at_median_s": 16.32,
+    "heading_err_mean_deg": 14.553261474345556
+  },
+  {
+    "iter": 2000,
+    "site": "slope16",
+    "episodes": 12,
+    "reached": 12,
+    "held": 12,
+    "valid": 12,
+    "success": 12,
+    "fallen": 0,
+    "diverged": 0,
+    "slid_back": 0,
+    "off_patch": 0,
+    "timeout": 0,
+    "success_rate": 1.0,
+    "success_wilson95": [
+      0.7574992425007574,
+      1.0
+    ],
+    "climbed_mean_m": 3.335487147172292,
+    "reached_at_median_s": 12.129999999999999,
+    "heading_err_mean_deg": 13.670339864033929
+  },
+  {
+    "iter": 2500,
+    "site": "slope20",
+    "episodes": 12,
+    "reached": 10,
+    "held": 10,
+    "valid": 12,
+    "success": 10,
+    "fallen": 0,
+    "diverged": 0,
+    "slid_back": 1,
+    "off_patch": 1,
+    "timeout": 0,
+    "success_rate": 0.8333333333333334,
+    "success_wilson95": [
+      0.5519636426153274,
+      0.9530358523851776
+    ],
+    "climbed_mean_m": 3.2597673734029136,
+    "reached_at_median_s": 12.23,
+    "heading_err_mean_deg": 17.975579347930147
+  },
+  {
+    "iter": 2500,
+    "site": "slope16",
+    "episodes": 12,
+    "reached": 12,
+    "held": 12,
+    "valid": 12,
+    "success": 12,
+    "fallen": 0,
+    "diverged": 0,
+    "slid_back": 0,
+    "off_patch": 0,
+    "timeout": 0,
+    "success_rate": 1.0,
+    "success_wilson95": [
+      0.7574992425007574,
+      1.0
+    ],
+    "climbed_mean_m": 3.4055227438608804,
+    "reached_at_median_s": 11.34,
+    "heading_err_mean_deg": 13.75300380045345
+  },
+  {
+    "iter": 2999,
+    "site": "slope20",
+    "episodes": 12,
+    "reached": 5,
+    "held": 5,
+    "valid": 11,
+    "success": 4,
+    "fallen": 0,
+    "diverged": 0,
+    "slid_back": 6,
+    "off_patch": 1,
+    "timeout": 0,
+    "success_rate": 0.3333333333333333,
+    "success_wilson95": [
+      0.13811783989736134,
+      0.609382412602386
+    ],
+    "climbed_mean_m": 2.7262827157974243,
+    "reached_at_median_s": 13.6,
+    "heading_err_mean_deg": 26.563673268130998
+  },
+  {
+    "iter": 2999,
+    "site": "slope16",
+    "episodes": 12,
+    "reached": 8,
+    "held": 8,
+    "valid": 12,
+    "success": 8,
+    "fallen": 0,
+    "diverged": 0,
+    "slid_back": 4,
+    "off_patch": 0,
+    "timeout": 0,
+    "success_rate": 0.6666666666666666,
+    "success_wilson95": [
+      0.3906175873976139,
+      0.8618821601026385
+    ],
+    "climbed_mean_m": 3.049964487552643,
+    "reached_at_median_s": 13.71,
+    "heading_err_mean_deg": 28.177813844041314
+  }
+]

@@ -1,0 +1,46 @@
+[
+  {
+    "iter": 3000,
+    "site": "slope16",
+    "episodes": 12,
+    "reached": 11,
+    "held": 10,
+    "valid": 11,
+    "success": 10,
+    "fallen": 1,
+    "diverged": 0,
+    "slid_back": 0,
+    "off_patch": 0,
+    "timeout": 1,
+    "success_rate": 0.8333333333333334,
+    "success_wilson95": [
+      0.5519636426153274,
+      0.9530358523851776
+    ],
+    "climbed_mean_m": 2.8821665396293006,
+    "reached_at_median_s": 17.82,
+    "heading_err_mean_deg": 15.355737501111287
+  },
+  {
+    "iter": 3250,
+    "site": "slope16",
+    "episodes": 12,
+    "reached": 8,
+    "held": 7,
+    "valid": 9,
+    "success": 7,
+    "fallen": 2,
+    "diverged": 0,
+    "slid_back": 0,
+    "off_patch": 0,
+    "timeout": 3,
+    "success_rate": 0.5833333333333334,
+    "success_wilson95": [
+      0.3195073356553728,
+      0.8067425380947535
+    ],
+    "climbed_mean_m": 2.470330192397038,
+    "reached_at_median_s": 24.950000000000003,
+    "heading_err_mean_deg": 17.457469111982082
+  }
+]
